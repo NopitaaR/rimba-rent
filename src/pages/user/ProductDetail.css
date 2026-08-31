@@ -1,0 +1,445 @@
+/* ===== PRODUCT DETAIL PAGE — mengikuti desain Figma ===== */
+
+/* Page wrapper */
+.pd-page {
+  min-height: 100vh;
+  background-color: #eae8e1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== NAVBAR ===== */
+.pd-navbar {
+  background: #ffffff;
+  border-bottom: 1px solid #d9d7d0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.pd-navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pd-brand-text {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.pd-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pd-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3a3a3a;
+  border-radius: 8px;
+  transition: background 150ms ease;
+}
+
+.pd-icon-btn:hover {
+  background: #f0ede6;
+  color: #1a1a1a;
+}
+
+/* ===== CONTENT ===== */
+.pd-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+/* ===== TOMBOL KEMBALI ===== */
+.pd-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 0;
+  margin-bottom: 24px;
+  color: #3a3a3a;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 150ms ease;
+  line-height: 1;
+}
+
+.pd-back-btn:hover {
+  color: #1a1a1a;
+}
+
+.pd-back-btn svg {
+  flex-shrink: 0;
+}
+
+/* ===== LAYOUT DUA KOLOM ===== */
+.pd-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* ===== KOLOM KIRI: GAMBAR ===== */
+.pd-image-col {
+  position: sticky;
+  top: 88px; /* navbar height + gap */
+}
+
+.pd-image-card {
+  background: #f5f5f3;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  padding: 24px;
+}
+
+.pd-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+}
+
+/* ===== KOLOM KANAN: INFO ===== */
+.pd-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-top: 8px;
+}
+
+/* Kategori */
+.pd-category {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888;
+  margin: 0 0 6px;
+  line-height: 1;
+}
+
+/* Nama produk */
+.pd-name {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+
+/* Harga */
+.pd-price-row {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.pd-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+}
+
+.pd-price-unit {
+  font-size: 15px;
+  font-weight: 400;
+  color: #888;
+}
+
+/* Stok */
+.pd-stock {
+  font-size: 14px;
+  color: #888;
+  margin: 0 0 20px;
+  line-height: 1;
+}
+
+/* ===== SECTION LABELS ===== */
+.pd-section {
+  margin-bottom: 12px;
+}
+
+.pd-section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888;
+  margin: 0 0 10px;
+  line-height: 1;
+}
+
+/* ===== DIVIDER ===== */
+.pd-divider {
+  border: none;
+  border-top: 1px solid #d4d2cc;
+  margin: 20px 0;
+}
+
+/* ===== DESKRIPSI ===== */
+.pd-description {
+  font-size: 15px;
+  color: #4a4a4a;
+  line-height: 1.7;
+  margin: 0 0 24px;
+}
+
+/* ===== KUANTITAS ===== */
+.pd-qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.pd-qty-row .pd-section-label {
+  margin-bottom: 0;
+}
+
+.pd-qty-selector {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1.5px solid #c0bebb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.pd-qty-btn {
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  font-weight: 400;
+  color: #3a3a3a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms ease;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  flex-shrink: 0;
+}
+
+.pd-qty-btn:hover:not(:disabled) {
+  background: #f0ede6;
+}
+
+.pd-qty-btn:disabled {
+  color: #c0bebb;
+  cursor: not-allowed;
+}
+
+.pd-qty-value {
+  min-width: 44px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  border-left: 1px solid #d4d2cc;
+  border-right: 1px solid #d4d2cc;
+  line-height: 40px;
+  height: 40px;
+  display: inline-block;
+}
+
+/* Hint stok maks */
+.pd-qty-hint {
+  font-size: 13px;
+  color: #aaa;
+  text-align: right;
+  margin: 0 0 24px;
+  line-height: 1;
+}
+
+/* ===== TOMBOL TAMBAH KE KERANJANG ===== */
+.pd-add-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  background: #2d2d2d;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  transition: background 200ms ease, transform 150ms ease;
+  letter-spacing: 0.01em;
+}
+
+.pd-add-btn:hover {
+  background: #1a1a1a;
+  transform: translateY(-1px);
+}
+
+.pd-add-btn:active {
+  transform: translateY(0);
+}
+
+.pd-add-btn.added {
+  background: #556158;
+}
+
+.pd-add-btn.stock-full,
+.pd-add-btn:disabled {
+  background: #a0a0a0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pd-add-btn:disabled:hover {
+  background: #a0a0a0;
+  transform: none;
+}
+
+/* ===== NOT FOUND ===== */
+.pd-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.pd-not-found h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #3a3a3a;
+}
+
+.pd-back-link {
+  font-size: 15px;
+  color: #556158;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pd-back-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== RESPONSIVE ===== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .pd-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .pd-name {
+    font-size: 26px;
+  }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+  .pd-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .pd-image-col {
+    position: static;
+  }
+
+  .pd-image-card {
+    aspect-ratio: 4 / 3;
+    padding: 20px;
+  }
+
+  .pd-name {
+    font-size: 24px;
+  }
+
+  .pd-price {
+    font-size: 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .pd-content {
+    padding: 20px 16px 48px;
+  }
+
+  .pd-name {
+    font-size: 22px;
+  }
+
+  .pd-image-card {
+    aspect-ratio: 1 / 1;
+    padding: 16px;
+  }
+
+  .pd-cap-pill {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .pd-add-btn {
+    font-size: 15px;
+    padding: 14px 20px;
+  }
+
+  .pd-qty-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .pd-qty-value {
+    min-width: 36px;
+    line-height: 36px;
+    height: 36px;
+  }
+
+  .pd-brand-text {
+    font-size: 15px;
+  }
+}

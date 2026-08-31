@@ -1,0 +1,774 @@
+/* ===== PAYMENT PAGE — sesuai desain Figma ===== */
+
+.pay-page {
+  min-height: 100vh;
+  background-color: #eae8e1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== NAVBAR ===== */
+.pay-navbar {
+  background: #ffffff;
+  border-bottom: 1px solid #d9d7d0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.pay-navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pay-brand-text {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.pay-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pay-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3a3a3a;
+  border-radius: 8px;
+  transition: background 150ms ease;
+  position: relative;
+  text-decoration: none;
+}
+
+.pay-icon-btn:hover {
+  background: #f0ede6;
+  color: #1a1a1a;
+}
+
+.pay-nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 17px;
+  height: 17px;
+  background: #3a3a3a;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ===== CONTENT ===== */
+.pay-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+/* Back link */
+.pay-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b6b6b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  margin-bottom: 14px;
+  transition: color 150ms ease;
+  line-height: 1;
+}
+
+.pay-back-link:hover { color: #1a1a1a; }
+
+/* Title */
+.pay-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+  line-height: 1;
+}
+
+.pay-subtitle {
+  font-size: 14px;
+  color: #888;
+  margin: 0 0 24px;
+}
+
+/* ===== LAYOUT ===== */
+.pay-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ===== KOLOM KIRI ===== */
+.pay-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Total Pembayaran Card */
+.pay-total-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+
+.pay-total-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.pay-total-amount {
+  font-size: 34px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* QRIS Card */
+.pay-qris-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pay-qris-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pay-qris-badge {
+  display: inline-block;
+  background: #e63946;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  line-height: 1.2;
+}
+
+.pay-qris-merchant {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+
+.pay-qr-wrap {
+  padding: 12px;
+  border: 1.5px solid #e4e2dc;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.pay-qr-svg {
+  display: block;
+}
+
+.pay-qris-hint {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  margin: 0;
+}
+
+.pay-qris-total-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f5f3ee;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.pay-qris-total-label {
+  font-size: 13px;
+  color: #888;
+  font-weight: 500;
+}
+
+.pay-qris-total-val {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* Timer Card */
+.pay-timer-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid transparent;
+  transition: border-color 300ms ease;
+}
+
+.pay-timer-card.warning {
+  border-color: #e63946;
+}
+
+.pay-timer-display {
+  font-size: 40px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  font-family: 'Courier New', monospace;
+}
+
+.pay-timer-display.warning {
+  color: #e63946;
+  animation: pay-pulse 1s ease-in-out infinite;
+}
+
+@keyframes pay-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.pay-timer-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  text-align: center;
+  margin: 0;
+}
+
+.pay-timer-hint {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Upload Card */
+.pay-upload-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+
+.pay-upload-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #3a3a3a;
+  margin-bottom: 14px;
+}
+
+.pay-upload-zone {
+  border: 2px dashed #c0bebb;
+  border-radius: 10px;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease;
+  background: #fafaf8;
+  min-height: 120px;
+  justify-content: center;
+}
+
+.pay-upload-zone:hover,
+.pay-upload-zone.drag-over {
+  border-color: #556158;
+  background: #f0ede6;
+}
+
+.pay-upload-zone.uploaded {
+  border-color: #556158;
+  background: #f0f4f0;
+}
+
+.pay-upload-zone svg {
+  color: #aaa;
+}
+
+.pay-upload-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5a5a5a;
+  margin: 0;
+  text-align: center;
+}
+
+.pay-upload-formats {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0;
+}
+
+.pay-upload-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.pay-upload-done-icon {
+  font-size: 28px;
+  color: #556158;
+}
+
+.pay-upload-filename {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3a3a3a;
+  word-break: break-all;
+  text-align: center;
+}
+
+.pay-upload-change {
+  font-size: 12px;
+  color: #888;
+}
+
+/* Tombol Selesai */
+.pay-selesai-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background: #3a3a3a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 200ms ease, transform 150ms ease;
+  letter-spacing: 0.02em;
+}
+
+.pay-selesai-btn:hover {
+  background: #1a1a1a;
+  transform: translateY(-1px);
+}
+
+.pay-selesai-btn:active {
+  transform: translateY(0);
+}
+
+/* ===== KOLOM KANAN: Ringkasan ===== */
+.pay-right {
+  position: sticky;
+  top: 80px;
+}
+
+.pay-summary-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 22px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pay-summary-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  margin: 0 0 16px;
+}
+
+/* Daftar produk */
+.pay-summary-items {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.pay-summary-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.pay-summary-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #f0ede6;
+}
+
+.pay-summary-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pay-summary-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+  background: #f0ede6;
+  padding: 2px 8px;
+  border-radius: 50px;
+  display: inline-block;
+  align-self: flex-start;
+}
+
+.pay-summary-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pay-summary-calc {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+}
+
+.pay-summary-subtotal {
+  font-size: 13px;
+  color: #3a3a3a;
+  margin: 0;
+}
+
+.pay-summary-subtotal strong {
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* Divider */
+.pay-summary-divider {
+  border: none;
+  border-top: 1px solid #e8e5e0;
+  margin: 14px 0;
+}
+
+/* Rental info rows */
+.pay-rental-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pay-rental-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pay-rental-label {
+  font-size: 13px;
+  color: #6b6b6b;
+}
+
+.pay-rental-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* Tanggal penyewaan */
+.pay-dates-section { }
+
+.pay-dates-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.pay-dates-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pay-date-box {
+  flex: 1;
+  background: #f5f3ee;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pay-date-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #aaa;
+}
+
+.pay-date-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.pay-date-arrow {
+  font-size: 16px;
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+/* Total di ringkasan kanan */
+.pay-summary-total-label {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.pay-summary-total {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* ===== OVERLAY SCREENS ===== */
+.pay-overlay-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  text-align: center;
+  gap: 16px;
+}
+
+.pay-overlay-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.pay-icon-success {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.pay-icon-timeout {
+  background: #fdecea;
+  color: #e63946;
+}
+
+.pay-overlay-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: 0.02em;
+  margin: 0;
+  max-width: 360px;
+}
+
+.pay-overlay-subtitle {
+  font-size: 15px;
+  color: #6b6b6b;
+  margin: 0;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+/* Receipt box */
+.pay-receipt-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  width: 100%;
+  max-width: 340px;
+  margin-top: 4px;
+}
+
+.pay-receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 14px;
+  color: #6b6b6b;
+}
+
+.pay-receipt-val {
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.pay-receipt-divider {
+  border: none;
+  border-top: 1px solid #e8e5e0;
+  margin: 10px 0;
+}
+
+/* Home / Retry buttons */
+.pay-home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: #3a3a3a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  transition: background 200ms ease;
+  margin-top: 8px;
+}
+
+.pay-home-btn:hover { background: #1a1a1a; }
+
+.pay-timeout-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.pay-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 32px;
+  background: none;
+  color: #556158;
+  border: 2px solid #556158;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  transition: background 200ms ease, color 200ms ease;
+}
+
+.pay-retry-btn:hover {
+  background: #556158;
+  color: #fff;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .pay-layout {
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pay-layout {
+    grid-template-columns: 1fr;
+  }
+  .pay-right {
+    position: static;
+  }
+  .pay-total-amount {
+    font-size: 28px;
+  }
+  .pay-timer-display {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pay-content {
+    padding: 20px 14px 48px;
+  }
+  .pay-title {
+    font-size: 20px;
+  }
+  .pay-brand-text {
+    font-size: 15px;
+  }
+  .pay-overlay-title {
+    font-size: 18px;
+  }
+  .pay-dates-row {
+    flex-direction: column;
+  }
+  .pay-date-arrow {
+    transform: rotate(90deg);
+  }
+}

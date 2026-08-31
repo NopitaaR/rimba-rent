@@ -1,0 +1,586 @@
+/* ===== CART PAGE — mengikuti desain Figma ===== */
+
+/* Page wrapper */
+.cart-page {
+  min-height: 100vh;
+  background-color: #eae8e1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== NAVBAR ===== */
+.cart-navbar {
+  background: #ffffff;
+  border-bottom: 1px solid #d9d7d0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.cart-navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cart-brand-text {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.cart-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3a3a3a;
+  border-radius: 8px;
+  transition: background 150ms ease;
+  position: relative;
+  text-decoration: none;
+}
+
+.cart-icon-btn:hover {
+  background: #f0ede6;
+  color: #1a1a1a;
+}
+
+.cart-nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 17px;
+  height: 17px;
+  background: #3a3a3a;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-family: var(--font-family, 'Inter', sans-serif);
+}
+
+/* ===== CONTENT ===== */
+.cart-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+/* Lanjut Belanja link */
+.cart-continue-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b6b6b;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 14px;
+  transition: color 150ms ease;
+  line-height: 1;
+}
+
+.cart-continue-link:hover {
+  color: #1a1a1a;
+}
+
+/* Judul halaman */
+.cart-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 24px;
+  line-height: 1;
+}
+
+/* ===== LAYOUT DUA KOLOM ===== */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ===== KOLOM KIRI ===== */
+.cart-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== CART ITEMS CARD ===== */
+.cart-items-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+
+/* ===== CART ITEM ===== */
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 20px;
+}
+
+.cart-item-img-wrap {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f0ede6;
+}
+
+.cart-item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cart-item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cart-item-badge {
+  display: inline-block;
+  background: #f0ede6;
+  color: #5a5a5a;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 50px;
+  line-height: 1.4;
+  align-self: flex-start;
+}
+
+.cart-item-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.cart-item-price span {
+  font-weight: 400;
+  color: #888;
+}
+
+/* Quantity selector */
+.cart-item-qty-wrap {
+  flex-shrink: 0;
+}
+
+.cart-qty-selector {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #c0bebb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.cart-qty-btn {
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #3a3a3a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms ease;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  flex-shrink: 0;
+}
+
+.cart-qty-btn:hover:not(:disabled) {
+  background: #f0ede6;
+}
+
+.cart-qty-btn:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.cart-qty-value {
+  min-width: 36px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  border-left: 1px solid #d4d2cc;
+  border-right: 1px solid #d4d2cc;
+  line-height: 36px;
+  height: 36px;
+  display: inline-block;
+  font-family: var(--font-family, 'Inter', sans-serif);
+}
+
+/* Tombol hapus */
+.cart-item-delete {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #aaa;
+  border-radius: 6px;
+  transition: color 150ms ease, background 150ms ease;
+}
+
+.cart-item-delete:hover {
+  color: #e53e3e;
+  background: #fff0f0;
+}
+
+/* Divider antar item */
+.cart-item-divider {
+  border: none;
+  border-top: 1px solid #eeece8;
+  margin: 0 20px;
+}
+
+/* ===== EMPTY STATE ===== */
+.cart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 24px;
+  text-align: center;
+  gap: 10px;
+}
+
+.cart-empty-icon {
+  font-size: 44px;
+  margin: 0 0 4px;
+}
+
+.cart-empty-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #3a3a3a;
+  margin: 0;
+}
+
+.cart-empty-desc {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+.cart-empty-btn {
+  margin-top: 8px;
+  display: inline-block;
+  padding: 10px 24px;
+  background: #2d2d2d;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 150ms ease;
+}
+
+.cart-empty-btn:hover {
+  background: #1a1a1a;
+}
+
+/* ===== TANGGAL PENYEWAAN CARD ===== */
+.cart-date-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 22px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+
+.cart-date-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  margin: 0 0 16px;
+}
+
+.cart-date-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.cart-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cart-date-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+  line-height: 1;
+}
+
+.cart-date-input {
+  padding: 11px 12px;
+  border: 1.5px solid #d0cec8;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2d2d2d;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  background: #fff;
+  transition: border-color 150ms ease;
+  width: 100%;
+  cursor: pointer;
+}
+
+.cart-date-input:focus {
+  outline: none;
+  border-color: #556158;
+  box-shadow: 0 0 0 3px rgba(85,97,88,0.1);
+}
+
+.cart-date-error {
+  font-size: 12px;
+  color: #e53e3e;
+  margin: 0 0 10px;
+}
+
+.cart-duration {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #3a3a3a;
+  padding-top: 4px;
+}
+
+.cart-duration svg {
+  color: #556158;
+  flex-shrink: 0;
+}
+
+/* ===== KOLOM KANAN: RINGKASAN PESANAN ===== */
+.cart-right {
+  position: sticky;
+  top: 80px;
+}
+
+.cart-summary-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 22px 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cart-summary-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  margin: 0 0 18px;
+}
+
+.cart-summary-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.cart-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-summary-label {
+  font-size: 14px;
+  color: #6b6b6b;
+}
+
+.cart-summary-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.cart-summary-divider {
+  border: none;
+  border-top: 1px solid #e8e5e0;
+  margin: 0 0 16px;
+}
+
+.cart-summary-total-label {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.cart-summary-total {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  line-height: 1.1;
+}
+
+/* Tombol Checkout */
+.cart-checkout-btn {
+  width: 100%;
+  padding: 15px 20px;
+  background: #3a3a3a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-family, 'Inter', sans-serif);
+  transition: background 200ms ease, transform 150ms ease;
+  margin-bottom: 14px;
+  letter-spacing: 0.01em;
+}
+
+.cart-checkout-btn:hover {
+  background: #1a1a1a;
+  transform: translateY(-1px);
+}
+
+.cart-checkout-btn:active {
+  transform: translateY(0);
+}
+
+/* Badge aman */
+.cart-secure-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #888;
+}
+
+.cart-secure-badge svg {
+  flex-shrink: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .cart-layout {
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cart-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-right {
+    position: static;
+    order: 3;
+  }
+
+  .cart-date-card {
+    order: 2;
+  }
+
+  .cart-date-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .cart-summary-total {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-content {
+    padding: 20px 14px 48px;
+  }
+
+  .cart-item {
+    padding: 16px 14px;
+    gap: 12px;
+  }
+
+  .cart-item-img-wrap {
+    width: 64px;
+    height: 64px;
+  }
+
+  .cart-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .cart-brand-text {
+    font-size: 15px;
+  }
+}
