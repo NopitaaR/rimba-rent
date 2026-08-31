@@ -1,4 +1,5 @@
 // Central Single Source of Truth for Admin Orders
+import { getProducts, updateProduct } from './products';
 
 export const ORIGINAL_ADMIN_ORDERS = [
   {
@@ -11,14 +12,15 @@ export const ORIGINAL_ADMIN_ORDERS = [
     date: '20/05/2026 - 22/05/2026',
     startDate: '20/05/2026',
     endDate: '22/05/2026',
-    duration: '3 Hari',
+    duration: '2 Hari',
+    durationDays: 2,
     itemsStr: 'Tenda Naturehike (1x), Sleeping Bag (2x)',
     items: [
-      { id: 1, name: 'Tenda Naturehike', qty: 1, durationDays: 3, price: 150000, image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=400' },
-      { id: 2, name: 'Sleeping Bag', qty: 2, durationDays: 3, price: 20000, image: 'https://images.unsplash.com/photo-1545459720-aac8509eb02c?auto=format&fit=crop&q=80&w=400' },
+      { id: 1, name: 'Tenda Naturehike', qty: 1, durationDays: 2, price: 50000, image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=400' },
+      { id: 2, name: 'Sleeping Bag', qty: 2, durationDays: 2, price: 20000, image: 'https://images.unsplash.com/photo-1545459720-aac8509eb02c?auto=format&fit=crop&q=80&w=400' },
     ],
-    total: 190000,
-    totalPayment: 190000,
+    total: 180000,
+    totalPayment: 180000,
     status: 'Menunggu Konfirmasi',
     statusClass: 'status-warning',
     paymentProof: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=600',
@@ -33,11 +35,12 @@ export const ORIGINAL_ADMIN_ORDERS = [
     date: '21/05/2026 - 23/05/2026',
     startDate: '21/05/2026',
     endDate: '23/05/2026',
-    duration: '3 Hari',
+    duration: '2 Hari',
+    durationDays: 2,
     itemsStr: 'Carrier 60L (1x), Matras Camping (2x)',
     items: [
-      { id: 3, name: 'Carrier 60L', qty: 1, durationDays: 3, price: 80000, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400' },
-      { id: 4, name: 'Matras Camping', qty: 2, durationDays: 3, price: 30000, image: 'https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&q=80&w=400' },
+      { id: 3, name: 'Carrier 60L', qty: 1, durationDays: 2, price: 40000, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400' },
+      { id: 4, name: 'Matras Camping', qty: 2, durationDays: 2, price: 15000, image: 'https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&q=80&w=400' },
     ],
     total: 140000,
     totalPayment: 140000,
@@ -55,10 +58,11 @@ export const ORIGINAL_ADMIN_ORDERS = [
     date: '22/05/2026 - 24/05/2026',
     startDate: '22/05/2026',
     endDate: '24/05/2026',
-    duration: '3 Hari',
+    duration: '2 Hari',
+    durationDays: 2,
     itemsStr: 'Paket Camping 2 Orang (1x)',
     items: [
-      { id: 5, name: 'Paket Camping 2 Orang', qty: 1, durationDays: 3, price: 160000, image: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80&w=400' },
+      { id: 5, name: 'Paket Camping 2 Orang', qty: 1, durationDays: 2, price: 80000, image: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80&w=400' },
     ],
     total: 160000,
     totalPayment: 160000,
@@ -76,14 +80,16 @@ export const ORIGINAL_ADMIN_ORDERS = [
     date: '17/05/2026 - 19/05/2026',
     startDate: '17/05/2026',
     endDate: '19/05/2026',
-    duration: '3 Hari',
+    duration: '2 Hari',
+    durationDays: 2,
     itemsStr: 'Peralatan BBQ (1x), Kompor Portable (1x)',
     items: [
-      { id: 6, name: 'Peralatan BBQ', qty: 1, durationDays: 3, price: 60000, image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=400' },
-      { id: 7, name: 'Kompor Portable', qty: 1, durationDays: 3, price: 50000, image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=400' },
+      { id: 8, name: 'Peralatan BBQ', qty: 1, durationDays: 2, price: 30000, image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=400' },
+      { id: 6, name: 'Kompor Portable', qty: 1, durationDays: 2, price: 25000, image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=400' },
     ],
     total: 110000,
     totalPayment: 110000,
+    overdueDays: 3,
     status: 'Terlambat',
     statusClass: 'status-danger',
     paymentProof: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=600',
@@ -98,10 +104,11 @@ export const ORIGINAL_ADMIN_ORDERS = [
     date: '15/05/2026 - 17/05/2026',
     startDate: '15/05/2026',
     endDate: '17/05/2026',
-    duration: '3 Hari',
+    duration: '2 Hari',
+    durationDays: 2,
     itemsStr: 'Kursi Camping (2x)',
     items: [
-      { id: 8, name: 'Kursi Camping', qty: 2, durationDays: 3, price: 30000, image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=400' },
+      { id: 5, name: 'Kursi Camping', qty: 2, durationDays: 2, price: 15000, image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=400' },
     ],
     total: 60000,
     totalPayment: 60000,
@@ -143,6 +150,17 @@ export function getAdminOrders() {
         .join(', ');
       const cleanId = (h.orderId || 'ORD-LOCAL').replace('#', '');
 
+      // Parse duration days from history object, string, or fallback
+      let durDays = 2;
+      if (typeof h.duration === 'object' && h.duration?.days) {
+        durDays = h.duration.days;
+      } else if (typeof h.duration === 'number') {
+        durDays = h.duration;
+      } else if (typeof h.duration === 'string') {
+        const m = h.duration.match(/\d+/);
+        if (m) durDays = parseInt(m[0], 10);
+      }
+
       return {
         id: h.orderId || '#ORD-LOCAL',
         cleanId,
@@ -153,8 +171,12 @@ export function getAdminOrders() {
         date: `${h.startDate || ''} - ${h.endDate || ''}`,
         startDate: h.startDate || '',
         endDate: h.endDate || '',
-        duration: typeof h.duration === 'object' ? h.duration?.label : (h.duration || '3 Hari'),
-        items: itemsList,
+        duration: typeof h.duration === 'object' ? h.duration?.label : (h.duration || `${durDays} Hari`),
+        durationDays: durDays,
+        items: itemsList.map((item) => ({
+          ...item,
+          durationDays: item.durationDays || durDays,
+        })),
         itemsStr: itemsSummary || 'Barang Penyewaan',
         total: h.totalPayment || 0,
         totalPayment: h.totalPayment || 0,
@@ -211,13 +233,67 @@ export function getAdminOrderById(paramId) {
 }
 
 export function updateAdminOrderStatus(orderId, newStatus) {
+  const currentOrders = getAdminOrders();
+  const cleanId = String(orderId).replace('#', '');
+  const targetOrder = currentOrders.find(
+    (o) => o.id === orderId || o.cleanId === cleanId
+  );
+
+  if (!targetOrder) return currentOrders;
+
+  const oldStatus = targetOrder.status;
+
+  // Prevent duplicate stock updates if status has not changed
+  if (oldStatus === newStatus) {
+    return currentOrders;
+  }
+
+  // Stock Adjustment Logic based on order status transitions:
+  // 1. Transition: non-'Sedang Disewa' -> 'Sedang Disewa' => Decrement product stock
+  if (oldStatus !== 'Sedang Disewa' && newStatus === 'Sedang Disewa') {
+    if (Array.isArray(targetOrder.items)) {
+      const allProducts = getProducts();
+      targetOrder.items.forEach((item) => {
+        const pId = item.productId ?? item.id;
+        let product = allProducts.find((p) => String(p.id) === String(pId));
+        if (!product && item.name) {
+          product = allProducts.find((p) => p.name.toLowerCase() === item.name.toLowerCase());
+        }
+        if (product) {
+          const qty = item.quantity ?? item.qty ?? 1;
+          const newStock = Math.max(0, product.stock - qty);
+          updateProduct(product.id, { stock: newStock });
+        }
+      });
+    }
+  }
+
+  // 2. Transition: 'Sedang Disewa' or 'Terlambat' -> 'Selesai' => Increment product stock
+  if ((oldStatus === 'Sedang Disewa' || oldStatus === 'Terlambat') && newStatus === 'Selesai') {
+    if (Array.isArray(targetOrder.items)) {
+      const allProducts = getProducts();
+      targetOrder.items.forEach((item) => {
+        const pId = item.productId ?? item.id;
+        let product = allProducts.find((p) => String(p.id) === String(pId));
+        if (!product && item.name) {
+          product = allProducts.find((p) => p.name.toLowerCase() === item.name.toLowerCase());
+        }
+        if (product) {
+          const qty = item.quantity ?? item.qty ?? 1;
+          const newStock = product.stock + qty;
+          updateProduct(product.id, { stock: newStock });
+        }
+      });
+    }
+  }
+
+  // Save new status override
   const overrides = getStatusOverrides();
-  const cleanId = orderId.replace('#', '');
-  
   overrides[orderId] = newStatus;
   overrides[cleanId] = newStatus;
 
   localStorage.setItem('bara_admin_order_statuses', JSON.stringify(overrides));
   window.dispatchEvent(new Event('bara_orders_updated'));
+
   return getAdminOrders();
 }

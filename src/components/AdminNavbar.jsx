@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import NotificationBell from './NotificationBell';
 import './AdminNavbar.css';
 
 const IconProfile = () => (
@@ -40,6 +41,7 @@ function AdminNavbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const profileRef = useRef(null);
 
   const handleOutsideClick = useCallback((e) => {
@@ -99,9 +101,7 @@ function AdminNavbar() {
 
         {/* Right Actions */}
         <div className="admin-navbar-right">
-          <button className="admin-icon-btn" aria-label="Informasi" title="Informasi" id="admin-nav-info" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#374151', borderRadius: '8px' }}>
-            <IconInfo />
-          </button>
+          <NotificationBell isOpen={notifOpen} onToggle={setNotifOpen} />
 
           <div className="admin-profile-wrap" ref={profileRef}>
             <button

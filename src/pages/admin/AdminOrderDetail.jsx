@@ -40,18 +40,84 @@ const IconWhatsApp = () => (
   </svg>
 );
 
-// Calculate dynamic overdue days
-function calcOverdueDays(endDateStr) {
+// Calculate dynamic overdue days safely for demo seed orders and real customer orders
+function calcOverdueDays(order) {
+  if (!order) return 3;
+
+  const orderObj = typeof order === 'string' ? { endDate: order } : order;
+
+  // 1. Check explicit overdueDays on order object (e.g. seed/demo data)
+  if (typeof orderObj.overdueDays === 'number' && orderObj.overdueDays > 0) {
+    return orderObj.overdueDays;
+  }
+  if (typeof orderObj.overdueDays === 'string') {
+    const num = parseInt(orderObj.overdueDays.match(/\d+/)?.[0] || '', 10);
+    if (!isNaN(num) && num > 0) return num;
+  }
+
+  // 2. Otherwise calculate from endDate and current date
+  const endDateStr = orderObj.endDate;
   if (!endDateStr) return 3;
+
   const parts = endDateStr.split('/').map((p) => parseInt(p.trim(), 10));
   if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
     const end = new Date(parts[2], parts[1] - 1, parts[0]);
     const today = new Date();
+
+    end.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
     const diffMs = today.getTime() - end.getTime();
-    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-    return diffDays > 0 ? diffDays : 3;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    // Fallback for seed demo orders if diffDays is excessively large (> 30 days)
+    const isSeedDemo = String(orderObj.id || '').includes('ORD-3117') || String(orderObj.cleanId || '').startsWith('3117');
+    if (isSeedDemo && diffDays > 30) {
+      return 3;
+    }
+
+    return diffDays > 0 ? diffDays : 0;
   }
+
   return 3;
+}
+
+function getRentalDurationDays(order, item) {
+  if (item && typeof item.durationDays === 'number' && item.durationDays > 0) {
+    return item.durationDays;
+  }
+  if (order && typeof order.durationDays === 'number' && order.durationDays > 0) {
+    return order.durationDays;
+  }
+  if (order && order.duration && typeof order.duration === 'object') {
+    if (typeof order.duration.days === 'number' && order.duration.days > 0) {
+      return order.duration.days;
+    }
+  }
+  if (order && order.duration) {
+    if (typeof order.duration === 'number' && order.duration > 0) {
+      return order.duration;
+    }
+    if (typeof order.duration === 'string') {
+      const match = order.duration.match(/\d+/);
+      if (match) {
+        const num = parseInt(match[0], 10);
+        if (!isNaN(num) && num > 0) return num;
+      }
+    }
+  }
+  if (order && order.startDate && order.endDate) {
+    const sParts = String(order.startDate).split('/').map((p) => parseInt(p.trim(), 10));
+    const eParts = String(order.endDate).split('/').map((p) => parseInt(p.trim(), 10));
+    if (sParts.length === 3 && eParts.length === 3 && !sParts.some(isNaN) && !eParts.some(isNaN)) {
+      const dStart = new Date(sParts[2], sParts[1] - 1, sParts[0]);
+      const dEnd = new Date(eParts[2], eParts[1] - 1, eParts[0]);
+      const diffMs = dEnd.getTime() - dStart.getTime();
+      const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+      if (diffDays > 0) return diffDays;
+    }
+  }
+  return 1;
 }
 
 function AdminOrderDetail() {
@@ -229,7 +295,7 @@ function AdminOrderDetail() {
               <span>KETERLAMBATAN PENGEMBALIAN</span>
             </div>
             <div className="late-info-body">
-              <h2 className="late-days-title">Terlambat {calcOverdueDays(order.endDate)} Hari</h2>
+              <h2 className="late-days-title">Terlambat {calcOverdueDays(order)} Hari</h2>
               <p className="late-return-date">
                 Seharusnya dikembalikan: <strong>{order.endDate || '19/05/2026'}</strong>
               </p>
@@ -275,18 +341,21 @@ function AdminOrderDetail() {
               <h2 className="detail-card-title">DETAIL PENYEWAAN</h2>
               <div className="rent-items-list">
                 {(order.items || []).map((item, idx) => {
-                  const sub = item.subtotal || item.price * (item.qty || item.quantity || 1) * (item.durationDays || 3);
+                  const rentalDays = getRentalDurationDays(order, item);
+                  const qty = item.qty || item.quantity || 1;
+                  const unitPrice = item.price || 0;
+                  const sub = item.subtotal ?? (unitPrice * qty * rentalDays);
                   return (
                     <div className="rent-item-row" key={idx}>
                       <img
-                        src={item.image || 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=200'}
+                        src={item.image || item.img || 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=200'}
                         alt={item.name}
                         className="rent-item-img"
                       />
                       <div className="rent-item-details">
                         <h3 className="rent-item-name">{item.name}</h3>
                         <p className="rent-item-sub">
-                          {item.qty || item.quantity || 1} unit × {item.durationDays || order.duration || '3 hari'}
+                          {qty} unit × {rentalDays} Hari
                         </p>
                       </div>
                       <div className="rent-item-price">{formatPrice(sub)}</div>

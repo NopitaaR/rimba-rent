@@ -5,12 +5,9 @@ import './AddProductModal.css';
 
 const CATEGORY_OPTIONS = [
   'Tenda',
-  'Perlengkapan Tidur',
+  'Pakaian',
   'Tas & Carrier',
   'Peralatan Masak',
-  'Peralatan BBQ',
-  'Aksesoris Camping',
-  'Lainnya',
 ];
 
 function AddProductModal({ isOpen, onClose }) {

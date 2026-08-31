@@ -34,30 +34,135 @@ function ProtectedAdminRoute({ children }) {
   return children;
 }
 
+// Protected route component for Customer
+function ProtectedCustomerRoute({ children }) {
+  const role = localStorage.getItem('userRole');
+  if (role === 'admin') {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+  if (role !== 'user') {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
+
 function App() {
   return (
     <BrowserRouter>
       <NotificationProvider>
         <CartProvider>
           <Routes>
-            {/* User Routes */}
+            {/* Public Routes */}
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/profile" element={<Profile />} />
 
-            {/* Information Routes */}
-            <Route path="/information" element={<Information />} />
-            <Route path="/information/cara-penyewaan" element={<InfoCaraPenyewaan />} />
-            <Route path="/information/aturan-rental" element={<InfoAturanRental />} />
-            <Route path="/information/denda-kerusakan" element={<InfoDendaKerusakan />} />
-            <Route path="/information/keterlambatan" element={<InfoKeterlambatan />} />
-            <Route path="/information/lokasi-rental" element={<InfoLokasiRental />} />
-            <Route path="/information/hubungi-kami" element={<InfoHubungiKami />} />
+            {/* Protected Customer Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedCustomerRoute>
+                  <Dashboard />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/products"
+              element={
+                <ProtectedCustomerRoute>
+                  <Products />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/products/:id"
+              element={
+                <ProtectedCustomerRoute>
+                  <ProductDetail />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/cart"
+              element={
+                <ProtectedCustomerRoute>
+                  <Cart />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/payment"
+              element={
+                <ProtectedCustomerRoute>
+                  <Payment />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedCustomerRoute>
+                  <Profile />
+                </ProtectedCustomerRoute>
+              }
+            />
+
+            {/* Protected Customer Information Routes */}
+            <Route
+              path="/information"
+              element={
+                <ProtectedCustomerRoute>
+                  <Information />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/information/cara-penyewaan"
+              element={
+                <ProtectedCustomerRoute>
+                  <InfoCaraPenyewaan />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/information/aturan-rental"
+              element={
+                <ProtectedCustomerRoute>
+                  <InfoAturanRental />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/information/denda-kerusakan"
+              element={
+                <ProtectedCustomerRoute>
+                  <InfoDendaKerusakan />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/information/keterlambatan"
+              element={
+                <ProtectedCustomerRoute>
+                  <InfoKeterlambatan />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/information/lokasi-rental"
+              element={
+                <ProtectedCustomerRoute>
+                  <InfoLokasiRental />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/information/hubungi-kami"
+              element={
+                <ProtectedCustomerRoute>
+                  <InfoHubungiKami />
+                </ProtectedCustomerRoute>
+              }
+            />
 
             {/* Admin Routes */}
             <Route

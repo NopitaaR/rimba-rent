@@ -18,7 +18,7 @@ export const INITIAL_PRODUCTS = [
   {
     id: 2,
     name: 'Sleeping Bag',
-    badge: 'TIDUR',
+    badge: 'PAKAIAN',
     category: 'Pakaian',
     desc: 'Hangat untuk suhu pegunungan.',
     description:
@@ -31,8 +31,8 @@ export const INITIAL_PRODUCTS = [
   {
     id: 3,
     name: 'Carrier 60L',
-    badge: 'TAS',
-    category: 'Pakaian',
+    badge: 'TAS & CARRIER',
+    category: 'Tas & Carrier',
     desc: 'Nyaman untuk pendakian panjang.',
     description:
       'Carrier 60L dengan desain ergonomis yang nyaman untuk pendakian jangka panjang. Dilengkapi dengan banyak kompartemen untuk mengorganisir perlengkapan dengan efisien.',
@@ -44,7 +44,7 @@ export const INITIAL_PRODUCTS = [
   {
     id: 4,
     name: 'Matras Camping',
-    badge: 'TIDUR',
+    badge: 'PAKAIAN',
     category: 'Pakaian',
     desc: 'Alas tidur insulasi dasar.',
     description:
@@ -57,8 +57,8 @@ export const INITIAL_PRODUCTS = [
   {
     id: 5,
     name: 'Kursi Camping',
-    badge: 'FURNITUR',
-    category: 'Paket',
+    badge: 'PERALATAN MASAK',
+    category: 'Peralatan Masak',
     desc: 'Ringan dan mudah dilipat.',
     description:
       'Kursi camping yang ringan namun kuat, mudah dilipat dan dibawa kemana saja. Cocok untuk bersantai di alam terbuka saat camping atau piknik.',
@@ -70,8 +70,8 @@ export const INITIAL_PRODUCTS = [
   {
     id: 6,
     name: 'Kompor Portable',
-    badge: 'MASAK',
-    category: 'Paket',
+    badge: 'PERALATAN MASAK',
+    category: 'Peralatan Masak',
     desc: 'Praktis menggunakan gas kaleng.',
     description:
       'Kompor portable yang praktis menggunakan gas kaleng standar. Cocok untuk memasak di alam terbuka dengan api yang stabil dan efisien.',
@@ -83,8 +83,8 @@ export const INITIAL_PRODUCTS = [
   {
     id: 7,
     name: 'Paket Camping 2 Orang',
-    badge: 'PAKET',
-    category: 'Paket',
+    badge: 'TENDA',
+    category: 'Tenda',
     desc: 'Tenda, matras, dan alat masak.',
     description:
       'Paket camping lengkap untuk 2 orang yang mencakup tenda, matras, dan peralatan masak dasar. Solusi praktis bagi yang ingin memulai petualangan camping.',
@@ -96,8 +96,8 @@ export const INITIAL_PRODUCTS = [
   {
     id: 8,
     name: 'Peralatan BBQ',
-    badge: 'BBQ',
-    category: 'BBQ',
+    badge: 'PERALATAN MASAK',
+    category: 'Peralatan Masak',
     desc: 'Set pemanggang lengkap.',
     description:
       'Set peralatan BBQ lengkap untuk acara bakar-bakaran yang menyenangkan. Termasuk panggangan, alat penjepit, dan aksesoris lainnya untuk pengalaman BBQ terbaik.',
@@ -112,6 +112,17 @@ export const PRODUCTS = INITIAL_PRODUCTS;
 
 const STORAGE_KEY = 'bara_products';
 
+const ALLOWED_CATEGORIES = ['Tenda', 'Pakaian', 'Tas & Carrier', 'Peralatan Masak'];
+
+function sanitizeCategory(cat) {
+  if (!cat) return 'Tenda';
+  if (ALLOWED_CATEGORIES.includes(cat)) return cat;
+  if (cat.toLowerCase().includes('tas') || cat.toLowerCase().includes('carrier')) return 'Tas & Carrier';
+  if (cat.toLowerCase().includes('masak') || cat.toLowerCase().includes('bbq')) return 'Peralatan Masak';
+  if (cat.toLowerCase().includes('pakaian') || cat.toLowerCase().includes('tidur')) return 'Pakaian';
+  return 'Tenda';
+}
+
 /** Ambil seluruh daftar produk (disinkronkan dengan localStorage) */
 export function getProducts() {
   try {
@@ -119,7 +130,10 @@ export function getProducts() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        return parsed.map((p) => ({
+          ...p,
+          category: sanitizeCategory(p.category),
+        }));
       }
     }
   } catch (err) {
@@ -146,6 +160,7 @@ export function updateProduct(id, updatedFields) {
   const updated = {
     ...current,
     ...updatedFields,
+    category: sanitizeCategory(updatedFields.category || current.category),
     // buat desc singkat otomatis jika description diupdate
     desc: updatedFields.description
       ? updatedFields.description.slice(0, 40) + '...'
@@ -190,11 +205,12 @@ export function updateProduct(id, updatedFields) {
 export function addProduct(newProductData) {
   const products = getProducts();
   const newId = products.length > 0 ? Math.max(...products.map((p) => Number(p.id) || 0)) + 1 : 1;
+  const cleanCategory = sanitizeCategory(newProductData.category);
   const newProduct = {
     id: newId,
     name: newProductData.name,
-    badge: (newProductData.category || 'TENDA').toUpperCase(),
-    category: newProductData.category || 'Tenda',
+    badge: cleanCategory.toUpperCase(),
+    category: cleanCategory,
     desc: newProductData.description
       ? newProductData.description.slice(0, 40) + '...'
       : 'Produk rental camping BARA RIMBA RENT',
@@ -211,7 +227,7 @@ export function addProduct(newProductData) {
   return newProduct;
 }
 
-export const CATEGORIES = ['Semua', 'Paket', 'Tenda', 'Pakaian', 'BBQ', 'Perlengkapan Tidur', 'Tas & Carrier', 'Peralatan Masak', 'Peralatan BBQ', 'Aksesoris Camping', 'Lainnya'];
+export const CATEGORIES = ['Semua', 'Tenda', 'Pakaian', 'Tas & Carrier', 'Peralatan Masak'];
 
 export const formatPrice = (price) =>
   new Intl.NumberFormat('id-ID', {

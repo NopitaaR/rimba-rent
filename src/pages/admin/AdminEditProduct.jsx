@@ -138,11 +138,11 @@ function AdminEditProduct() {
       if (updated) {
         setSuccessMsg('Produk berhasil diperbarui!');
         // Tambahkan notifikasi ke notification bell context
-        addNotif(
-          'Produk Diperbarui',
-          `Produk "${updated.name}" berhasil diperbarui. Stok saat ini: ${updated.stock}.`,
-          'info'
-        );
+        addNotif({
+          type: 'info',
+          title: 'Produk Diperbarui',
+          body: `Produk "${updated.name}" berhasil diperbarui. Stok saat ini: ${updated.stock}.`,
+        });
 
         setTimeout(() => {
           navigate('/admin/products');
