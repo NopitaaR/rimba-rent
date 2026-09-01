@@ -1,385 +1,668 @@
-import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import AdminNavbar from '../../components/AdminNavbar';
-import { getProductById, updateProduct, CATEGORIES } from '../../data/products';
-import { useNotification } from '../../context/NotificationContext';
-import './AdminEditProduct.css';
 
-// SVG Icons
-const IconArrowLeft = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="19" y1="12" x2="5" y2="12" />
-    <polyline points="12 19 5 12 12 5" />
-  </svg>
-);
+import {
+  fetchProductById,
+  updateProductApi,
+} from '../../api/productsApi';
 
-const IconCamera = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-    <circle cx="12" cy="13" r="4" />
-  </svg>
-);
+import './AdminDashboard.css';
 
-const IconAlert = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="8" x2="12" y2="12" />
-    <line x1="12" y1="16" x2="12.01" y2="16" />
-  </svg>
-);
-
-const IconCheck = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12" />
-  </svg>
-);
+const CATEGORY_OPTIONS = [
+  'Tenda',
+  'Pakaian',
+  'Tas & Carrier',
+  'Peralatan Masak',
+];
 
 function AdminEditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addNotif } = useNotification();
-  const fileInputRef = useRef(null);
 
-  const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    price: '',
-    stock: '',
-    description: '',
-    img: '',
-  });
+  // ================================
+  // STATE PRODUK
+  // ================================
+  const [name, setName] = useState('');
+  const [category, setCategory] = useState('');
+  const [price, setPrice] = useState('');
+  const [stock, setStock] = useState('');
+  const [description, setDescription] = useState('');
+  const [img, setImg] = useState('');
 
-  const [errors, setErrors] = useState({});
-  const [successMsg, setSuccessMsg] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [productExists, setProductExists] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
+
+  // ================================
+  // AMBIL PRODUK DARI DATABASE
+  // ================================
   useEffect(() => {
-    const product = getProductById(id);
-    if (product) {
-      setFormData({
-        name: product.name || '',
-        category: product.category || '',
-        price: product.price !== undefined ? product.price : '',
-        stock: product.stock !== undefined ? product.stock : '',
-        description: product.description || product.desc || '',
-        img: product.img || '',
-      });
-    } else {
-      setProductExists(false);
-    }
+
+    const loadProduct = async () => {
+
+      try {
+
+        setLoading(true);
+        setErrorMessage('');
+
+        const product = await fetchProductById(id);
+
+        setName(product.name || '');
+        setCategory(product.category || '');
+        setPrice(product.price || '');
+        setStock(product.stock || '');
+        setDescription(product.description || '');
+        setImg(product.image || '');
+
+      } catch (error) {
+
+        console.error(
+          'Gagal mengambil detail produk:',
+          error
+        );
+
+        setErrorMessage(
+          'Produk tidak ditemukan atau gagal mengambil data.'
+        );
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
+
+    loadProduct();
+
   }, [id]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
-  };
 
+  // ================================
+  // HANDLE GANTI GAMBAR
+  // ================================
   const handleImageChange = (e) => {
+
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, img: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setImg(reader.result);
+    };
+
+    reader.readAsDataURL(file);
+
   };
 
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) {
-      newErrors.name = 'Nama produk tidak boleh kosong.';
-    }
-    if (!formData.category) {
-      newErrors.category = 'Kategori produk harus dipilih.';
-    }
-    if (formData.price === '' || isNaN(formData.price) || Number(formData.price) <= 0) {
-      newErrors.price = 'Harga sewa per hari harus lebih dari 0.';
-    }
-    if (formData.stock === '' || isNaN(formData.stock) || Number(formData.stock) < 0) {
-      newErrors.stock = 'Jumlah stok tidak boleh kurang dari 0.';
-    }
-    if (!formData.description.trim()) {
-      newErrors.description = 'Deskripsi produk tidak boleh kosong.';
-    }
-    return newErrors;
-  };
 
-  const handleSubmit = (e) => {
+  // ================================
+  // VALIDASI + SIMPAN
+  // ================================
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+
+    setErrorMessage('');
+
+
+    // VALIDASI NAMA
+    if (!name.trim()) {
+
+      setErrorMessage(
+        'Nama produk wajib diisi.'
+      );
+
       return;
     }
 
-    setIsSubmitting(true);
 
-    setTimeout(() => {
-      const updated = updateProduct(id, {
-        name: formData.name.trim(),
-        category: formData.category,
-        price: Number(formData.price),
-        stock: Number(formData.stock),
-        description: formData.description.trim(),
-        img: formData.img,
+    // VALIDASI KATEGORI
+    if (!category) {
+
+      setErrorMessage(
+        'Silakan pilih kategori produk.'
+      );
+
+      return;
+    }
+
+
+    // VALIDASI HARGA
+    const numPrice = Number(price);
+
+    if (
+      isNaN(numPrice) ||
+      numPrice <= 0
+    ) {
+
+      setErrorMessage(
+        'Harga sewa harus lebih dari Rp 0.'
+      );
+
+      return;
+    }
+
+
+    // VALIDASI STOK
+    const numStock = Number(stock);
+
+    if (
+      isNaN(numStock) ||
+      numStock < 0
+    ) {
+
+      setErrorMessage(
+        'Jumlah stok tidak boleh negatif.'
+      );
+
+      return;
+    }
+
+
+    try {
+
+      setSaving(true);
+
+
+      // ================================
+      // UPDATE KE DATABASE
+      // ================================
+      await updateProductApi(id, {
+
+        name: name.trim(),
+
+        category,
+
+        price: numPrice,
+
+        stock: numStock,
+
+        description: description.trim(),
+
+        img:
+          img ||
+          'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80',
+
       });
 
-      setIsSubmitting(false);
 
-      if (updated) {
-        setSuccessMsg('Produk berhasil diperbarui!');
-        // Tambahkan notifikasi ke notification bell context
-        addNotif({
-          type: 'info',
-          title: 'Produk Diperbarui',
-          body: `Produk "${updated.name}" berhasil diperbarui. Stok saat ini: ${updated.stock}.`,
-        });
+      alert(
+        'Produk berhasil diperbarui.'
+      );
 
-        setTimeout(() => {
-          navigate('/admin/products');
-        }, 1200);
-      }
-    }, 500);
+
+      // Kembali ke halaman produk admin
+      navigate('/admin/products');
+
+
+    } catch (error) {
+
+      console.error(
+        'Gagal memperbarui produk:',
+        error
+      );
+
+      setErrorMessage(
+        error.message ||
+        'Gagal memperbarui produk.'
+      );
+
+    } finally {
+
+      setSaving(false);
+
+    }
+
   };
 
-  if (!productExists) {
+
+  // ================================
+  // LOADING
+  // ================================
+  if (loading) {
+
     return (
+
       <div className="admin-dashboard-page">
+
         <AdminNavbar />
+
         <main className="admin-dashboard-main">
-          <div className="edit-prod-not-found">
-            <h2>Produk tidak ditemukan</h2>
-            <p>Produk dengan ID #{id} tidak ada dalam sistem.</p>
-            <Link to="/admin/products" className="btn-admin-solid" style={{ display: 'inline-block', width: 'auto', marginTop: '12px' }}>
-              Kembali ke Kelola Produk
-            </Link>
+
+          <div
+            style={{
+              padding: '40px',
+              textAlign: 'center',
+            }}
+          >
+            Memuat produk...
           </div>
+
         </main>
+
       </div>
+
     );
+
   }
 
-  const categoryOptions = CATEGORIES.filter((c) => c !== 'Semua');
+
+  // ================================
+  // ERROR
+  // ================================
+  if (errorMessage && !name) {
+
+    return (
+
+      <div className="admin-dashboard-page">
+
+        <AdminNavbar />
+
+        <main className="admin-dashboard-main">
+
+          <div
+            style={{
+              padding: '40px',
+              textAlign: 'center',
+              color: '#dc2626',
+            }}
+          >
+            {errorMessage}
+          </div>
+
+
+          <div
+            style={{
+              textAlign: 'center',
+            }}
+          >
+
+            <button
+              className="btn-admin-solid"
+              onClick={() =>
+                navigate('/admin/products')
+              }
+            >
+              Kembali
+            </button>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    );
+
+  }
+
 
   return (
+
     <div className="admin-dashboard-page">
+
       <AdminNavbar />
 
+
       <main className="admin-dashboard-main">
-        {/* Back Link & Title */}
-        <div className="edit-prod-top">
-          <Link to="/admin/products" className="edit-prod-back-link">
-            <IconArrowLeft />
-            <span>Kembali ke Produk</span>
-          </Link>
-          <h1 className="edit-prod-title">EDIT PRODUK</h1>
+
+        {/* ================= HEADER ================= */}
+
+        <div className="admin-dashboard-header">
+
+          <h1 className="admin-page-title">
+            Edit Produk
+          </h1>
+
+          <p className="admin-page-subtitle">
+            Perbarui informasi produk yang tersedia
+            untuk disewa.
+          </p>
+
         </div>
 
-        {/* Global Feedback Banner */}
-        {successMsg && (
-          <div className="edit-prod-alert success">
-            <IconCheck />
-            <span>{successMsg}</span>
-          </div>
-        )}
 
-        {/* Two-Column Form Layout matching Figma */}
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="edit-prod-grid">
-            {/* Left Card: Form Inputs */}
-            <div className="edit-prod-card form-card">
-              {/* Nama Produk */}
-              <div className="form-group-edit">
-                <label className="edit-label" htmlFor="edit-name">
-                  Nama Produk
-                </label>
-                <input
-                  id="edit-name"
-                  type="text"
-                  name="name"
-                  className={`edit-input${errors.name ? ' is-invalid' : ''}`}
-                  placeholder="Masukkan nama produk"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-                {errors.name && (
-                  <span className="edit-error-text">
-                    <IconAlert />
-                    {errors.name}
-                  </span>
-                )}
-              </div>
+        {/* ================= FORM ================= */}
 
-              {/* Inline Row: Kategori & Harga */}
-              <div className="form-row-edit">
-                {/* Kategori */}
-                <div className="form-group-edit">
-                  <label className="edit-label" htmlFor="edit-category">
-                    Kategori
-                  </label>
-                  <select
-                    id="edit-category"
-                    name="category"
-                    className={`edit-input edit-select${errors.category ? ' is-invalid' : ''}`}
-                    value={formData.category}
-                    onChange={handleChange}
-                  >
-                    <option value="">Pilih Kategori</option>
-                    {categoryOptions.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.category && (
-                    <span className="edit-error-text">
-                      <IconAlert />
-                      {errors.category}
-                    </span>
-                  )}
-                </div>
+        <section
+          className="admin-card"
+          style={{
+            maxWidth: '850px',
+          }}
+        >
 
-                {/* Harga Sewa per Hari */}
-                <div className="form-group-edit">
-                  <label className="edit-label" htmlFor="edit-price">
-                    Harga Sewa per Hari (Rp)
-                  </label>
-                  <input
-                    id="edit-price"
-                    type="number"
-                    name="price"
-                    className={`edit-input${errors.price ? ' is-invalid' : ''}`}
-                    placeholder="0"
-                    value={formData.price}
-                    onChange={handleChange}
-                  />
-                  {errors.price && (
-                    <span className="edit-error-text">
-                      <IconAlert />
-                      {errors.price}
-                    </span>
-                  )}
-                </div>
-              </div>
+          <form onSubmit={handleSubmit}>
 
-              {/* Jumlah Stok (Half Width) */}
-              <div className="form-group-edit half-width">
-                <label className="edit-label" htmlFor="edit-stock">
-                  Jumlah Stok
-                </label>
-                <input
-                  id="edit-stock"
-                  type="number"
-                  name="stock"
-                  className={`edit-input${errors.stock ? ' is-invalid' : ''}`}
-                  placeholder="0"
-                  value={formData.stock}
-                  onChange={handleChange}
-                />
-                {errors.stock && (
-                  <span className="edit-error-text">
-                    <IconAlert />
-                    {errors.stock}
-                  </span>
-                )}
-              </div>
 
-              {/* Deskripsi Produk */}
-              <div className="form-group-edit">
-                <label className="edit-label" htmlFor="edit-description">
-                  Deskripsi Produk
-                </label>
-                <textarea
-                  id="edit-description"
-                  name="description"
-                  rows="5"
-                  className={`edit-textarea${errors.description ? ' is-invalid' : ''}`}
-                  placeholder="Tuliskan deskripsi lengkap produk..."
-                  value={formData.description}
-                  onChange={handleChange}
-                />
-                {errors.description && (
-                  <span className="edit-error-text">
-                    <IconAlert />
-                    {errors.description}
-                  </span>
-                )}
-              </div>
+            {/* ERROR */}
 
-              {/* Bottom Action Buttons inside left card container */}
-              <div className="edit-form-actions">
-                <button
-                  type="button"
-                  className="btn-edit-cancel"
-                  onClick={() => navigate('/admin/products')}
-                  disabled={isSubmitting}
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="btn-edit-submit"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
-                </button>
-              </div>
-            </div>
-
-            {/* Right Card: Foto Produk */}
-            <div className="edit-prod-card photo-card">
-              <label className="edit-label">Foto Produk</label>
+            {errorMessage && (
 
               <div
-                className="photo-upload-box"
-                onClick={() => fileInputRef.current?.click()}
+                style={{
+                  padding: '12px',
+                  marginBottom: '20px',
+                  background: '#fee2e2',
+                  color: '#991b1b',
+                  borderRadius: '8px',
+                }}
               >
-                {formData.img ? (
-                  <div className="photo-preview-wrap">
-                    <img
-                      src={formData.img}
-                      alt="Preview Produk"
-                      className="photo-preview-img"
-                    />
-                    <div className="photo-overlay">
-                      <IconCamera />
-                      <span>Ganti Foto</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="photo-upload-placeholder">
-                    <IconCamera />
-                    <p className="upload-title">Upload Foto Produk</p>
-                    <p className="upload-sub">JPG, PNG, atau JPEG</p>
-                  </div>
-                )}
+                {errorMessage}
               </div>
 
+            )}
+
+
+            {/* ================= FOTO ================= */}
+
+            <div
+              style={{
+                marginBottom: '20px',
+              }}
+            >
+
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: '600',
+                }}
+              >
+                FOTO PRODUK
+              </label>
+
+
+              {img && (
+
+                <img
+                  src={img}
+                  alt={name}
+                  style={{
+                    width: '160px',
+                    height: '160px',
+                    objectFit: 'cover',
+                    borderRadius: '10px',
+                    display: 'block',
+                    marginBottom: '12px',
+                  }}
+                />
+
+              )}
+
+
               <input
-                ref={fileInputRef}
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
-                style={{ display: 'none' }}
               />
 
-              <p className="photo-helper-text">
-                Gunakan foto dengan resolusi tinggi (min. 1080x1080px) untuk tampilan terbaik.
-              </p>
             </div>
-          </div>
-        </form>
+
+
+            {/* ================= NAMA ================= */}
+
+            <div
+              style={{
+                marginBottom: '20px',
+              }}
+            >
+
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: '600',
+                }}
+              >
+                NAMA PRODUK *
+              </label>
+
+
+              <input
+                type="text"
+                value={name}
+                onChange={(e) =>
+                  setName(e.target.value)
+                }
+                placeholder="Masukkan nama produk"
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                }}
+              />
+
+            </div>
+
+
+            {/* ================= KATEGORI ================= */}
+
+            <div
+              style={{
+                marginBottom: '20px',
+              }}
+            >
+
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: '600',
+                }}
+              >
+                KATEGORI *
+              </label>
+
+
+              <select
+                value={category}
+                onChange={(e) =>
+                  setCategory(e.target.value)
+                }
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                }}
+              >
+
+                <option value="">
+                  Pilih Kategori
+                </option>
+
+
+                {CATEGORY_OPTIONS.map((cat) => (
+
+                  <option
+                    key={cat}
+                    value={cat}
+                  >
+                    {cat}
+                  </option>
+
+                ))}
+
+              </select>
+
+            </div>
+
+
+            {/* ================= HARGA ================= */}
+
+            <div
+              style={{
+                marginBottom: '20px',
+              }}
+            >
+
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: '600',
+                }}
+              >
+                HARGA SEWA / HARI *
+              </label>
+
+
+              <input
+                type="number"
+                min="0"
+                value={price}
+                onChange={(e) =>
+                  setPrice(e.target.value)
+                }
+                placeholder="50000"
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                }}
+              />
+
+            </div>
+
+
+            {/* ================= STOK ================= */}
+
+            <div
+              style={{
+                marginBottom: '20px',
+              }}
+            >
+
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: '600',
+                }}
+              >
+                STOK *
+              </label>
+
+
+              <input
+                type="number"
+                min="0"
+                value={stock}
+                onChange={(e) =>
+                  setStock(e.target.value)
+                }
+                placeholder="10"
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                }}
+              />
+
+            </div>
+
+
+            {/* ================= DESKRIPSI ================= */}
+
+            <div
+              style={{
+                marginBottom: '25px',
+              }}
+            >
+
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: '600',
+                }}
+              >
+                DESKRIPSI PRODUK
+              </label>
+
+
+              <textarea
+                rows="5"
+                value={description}
+                onChange={(e) =>
+                  setDescription(e.target.value)
+                }
+                placeholder="Masukkan deskripsi produk"
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                  resize: 'vertical',
+                }}
+              />
+
+            </div>
+
+
+            {/* ================= BUTTON ================= */}
+
+            <div
+              style={{
+                display: 'flex',
+                gap: '12px',
+              }}
+            >
+
+              <button
+                type="button"
+                onClick={() =>
+                  navigate('/admin/products')
+                }
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                  background: '#fff',
+                  cursor: 'pointer',
+                }}
+              >
+                Batal
+              </button>
+
+
+              <button
+                type="submit"
+                className="btn-admin-solid"
+                disabled={saving}
+                style={{
+                  padding: '10px 20px',
+                  cursor: saving
+                    ? 'not-allowed'
+                    : 'pointer',
+                }}
+              >
+
+                {saving
+                  ? 'Menyimpan...'
+                  : 'Simpan Perubahan'}
+
+              </button>
+
+            </div>
+
+
+          </form>
+
+        </section>
+
       </main>
+
     </div>
+
   );
 }
 

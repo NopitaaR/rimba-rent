@@ -1,5 +1,5 @@
 // Central Single Source of Truth for Admin Orders
-import { getProducts, updateProduct } from './products';
+import { getProducts } from './products';
 
 export const ORIGINAL_ADMIN_ORDERS = [
   {

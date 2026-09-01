@@ -120,10 +120,17 @@ function Register() {
     setIsLoading(true);
     setSubmitError('');
 
-    // Simulate API call — replace with real registration logic later
     setTimeout(() => {
       setIsLoading(false);
       setIsSuccess(true);
+      localStorage.setItem('currentUser', JSON.stringify({
+        name: formData.namaLengkap,
+        username: formData.namaLengkap.toLowerCase().replace(/\s+/g, ''),
+        email: formData.email,
+        phone: formData.nomorWhatsApp,
+        role: 'Customer New',
+      }));
+      window.dispatchEvent(new Event('bara_user_updated'));
       setTimeout(() => navigate('/'), 1800);
     }, 1400);
   };

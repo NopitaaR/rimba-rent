@@ -128,7 +128,7 @@ function Navbar({ user = null }) {
                       <IconUser /> Profil Saya
                     </Link>
                     <Link to="/riwayat" className="navbar-dropdown-item" onClick={() => setDropdownOpen(false)}>
-                      <IconHistory /> Riwayat Sewa
+                      <IconHistory /> Riwayat Pesanan
                     </Link>
                     <div className="navbar-dropdown-divider" />
                     <button className="navbar-dropdown-item danger" onClick={handleLogout}>
@@ -181,7 +181,7 @@ function Navbar({ user = null }) {
               <IconUser /> Profil Saya
             </Link>
             <Link to="/riwayat" className="navbar-dropdown-item" onClick={closeMobile}>
-              <IconHistory /> Riwayat Sewa
+              <IconHistory /> Riwayat Pesanan
             </Link>
             <button className="navbar-mobile-logout" onClick={handleLogout}>
               <IconLogout /> Keluar

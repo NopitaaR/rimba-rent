@@ -19,6 +19,12 @@ const IconInfo = () => (
   </svg>
 );
 
+const IconHistory = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+  </svg>
+);
+
 const IconProfile = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10"/><circle cx="12" cy="9" r="3"/>
@@ -148,6 +154,9 @@ function Profile() {
             <Link to="/cart" className="profile-icon-btn" aria-label="Keranjang" id="profile-nav-cart">
               <IconCart />
               {totalItems > 0 && <span className="dash-cart-badge">{totalItems}</span>}
+            </Link>
+            <Link to="/riwayat" className="profile-icon-btn" aria-label="Riwayat Pesanan" title="Riwayat Pesanan" id="profile-nav-history">
+              <IconHistory />
             </Link>
             <Link to="/information" className="profile-icon-btn" aria-label="Informasi" id="profile-nav-info">
               <IconInfo />

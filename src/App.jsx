@@ -10,6 +10,7 @@ import ProductDetail from "./pages/user/ProductDetail";
 import Cart from "./pages/user/Cart";
 import Payment from "./pages/user/Payment";
 import Profile from "./pages/user/Profile";
+import CustomerOrders from "./pages/user/CustomerOrders";
 
 import Information from "./pages/info/Information";
 import InfoCaraPenyewaan from "./pages/info/InfoCaraPenyewaan";
@@ -102,6 +103,30 @@ function App() {
               element={
                 <ProtectedCustomerRoute>
                   <Profile />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/riwayat"
+              element={
+                <ProtectedCustomerRoute>
+                  <CustomerOrders />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/riwayat-pemesanan"
+              element={
+                <ProtectedCustomerRoute>
+                  <CustomerOrders />
+                </ProtectedCustomerRoute>
+              }
+            />
+            <Route
+              path="/riwayat/:id"
+              element={
+                <ProtectedCustomerRoute>
+                  <CustomerOrders />
                 </ProtectedCustomerRoute>
               }
             />

@@ -1,46 +1,53 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getProducts, CATEGORIES, formatPrice } from '../../data/products';
+import { fetchProducts } from '../../api/productsApi';
 import { useCart } from '../../context/CartContext';
 import './Dashboard.css';
 
 // ── SVG Icons ──────────────────────────────────────────
 const IconHamburger = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <line x1="3" y1="6"  x2="21" y2="6"/>
-    <line x1="3" y1="12" x2="21" y2="12"/>
-    <line x1="3" y1="18" x2="21" y2="18"/>
+    <line x1="3" y1="6" x2="21" y2="6" />
+    <line x1="3" y1="12" x2="21" y2="12" />
+    <line x1="3" y1="18" x2="21" y2="18" />
   </svg>
 );
 
 const IconSearch = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8"/>
-    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
   </svg>
 );
 
 const IconCart = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="9"  cy="21" r="1"/>
-    <circle cx="20" cy="21" r="1"/>
-    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+    <circle cx="9" cy="21" r="1" />
+    <circle cx="20" cy="21" r="1" />
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
   </svg>
 );
 
 const IconInfo = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="12" y1="16" x2="12" y2="12"/>
-    <line x1="12" y1="8"  x2="12.01" y2="8"/>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="16" x2="12" y2="12" />
+    <line x1="12" y1="8" x2="12.01" y2="8" />
+  </svg>
+);
+
+const IconHistory = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
   </svg>
 );
 
 const IconProfile = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/>
-    <circle cx="12" cy="9"  r="3"/>
-    <path d="M6.168 18.849A4 4 0 0 1 10 16h4a4 4 0 0 1 3.834 2.855"/>
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="9" r="3" />
+    <path d="M6.168 18.849A4 4 0 0 1 10 16h4a4 4 0 0 1 3.834 2.855" />
   </svg>
 );
 
@@ -83,14 +90,43 @@ function ProductCard({ product }) {
 function Dashboard() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('Semua');
-  const [productList, setProductList] = useState(getProducts);
+  const [productList, setProductList] = useState([]);
 
   const { totalItems } = useCart();
 
   useEffect(() => {
-    const handleUpdate = () => setProductList(getProducts());
-    window.addEventListener('bara_products_updated', handleUpdate);
-    return () => window.removeEventListener('bara_products_updated', handleUpdate);
+    const loadProducts = async () => {
+      try {
+        const products = await fetchProducts();
+
+        const formattedProducts = products.map((product) => ({
+          ...product,
+
+          // Sesuaikan nama field Laravel dengan frontend
+          img: product.image,
+          desc: product.description
+            ? product.description.slice(0, 40) + '...'
+            : '',
+
+          badge: product.category
+            ? product.category.toUpperCase()
+            : 'PRODUK',
+
+          // Pastikan angka
+          price: Number(product.price),
+          stock: Number(product.stock),
+        }));
+
+        setProductList(formattedProducts);
+      } catch (error) {
+        console.error('Gagal mengambil produk dari API:', error);
+
+        // Fallback sementara supaya website tetap berjalan
+        setProductList(getProducts());
+      }
+    };
+
+    loadProducts();
   }, []);
 
   const filtered = useMemo(() => {
@@ -126,6 +162,9 @@ function Dashboard() {
               {totalItems > 0 && (
                 <span className="dash-cart-badge">{totalItems}</span>
               )}
+            </Link>
+            <Link to="/riwayat" className="dash-icon-btn" aria-label="Riwayat Pesanan" title="Riwayat Pesanan" id="dash-nav-history">
+              <IconHistory />
             </Link>
             <Link to="/information" className="dash-icon-btn" aria-label="Informasi" title="Informasi" id="dash-info-btn">
               <IconInfo />

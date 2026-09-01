@@ -190,6 +190,9 @@ function Cart() {
                 <span className="cart-nav-badge">{totalItems}</span>
               )}
             </Link>
+            <Link to="/riwayat" className="cart-icon-btn" aria-label="Riwayat Pesanan" title="Riwayat Pesanan" id="cart-nav-history">
+              <IconHistory />
+            </Link>
             <Link to="/information" className="cart-icon-btn" aria-label="Informasi" title="Informasi" id="cart-nav-info">
               <IconInfo />
             </Link>

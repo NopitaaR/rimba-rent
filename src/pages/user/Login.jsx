@@ -87,6 +87,41 @@ function Login() {
         }
       } else if (inputVal && formData.password) {
         localStorage.setItem('userRole', 'user');
+
+        const emailLower = inputVal.toLowerCase();
+        let name = inputVal.includes('@') ? inputVal.split('@')[0] : inputVal;
+        let email = inputVal.includes('@') ? inputVal : `${inputVal}@gmail.com`;
+
+        if (emailLower === 'budi@gmail.com' || emailLower === 'budi') {
+          name = 'Budi Santoso';
+          email = 'budi@gmail.com';
+        } else if (emailLower === 'siti@gmail.com' || emailLower === 'siti') {
+          name = 'Siti Aminah';
+          email = 'siti@gmail.com';
+        } else if (emailLower === 'rizky@gmail.com' || emailLower === 'rizky') {
+          name = 'Rizky Pratama';
+          email = 'rizky@gmail.com';
+        } else if (emailLower === 'dedi@gmail.com' || emailLower === 'dedi') {
+          name = 'Dedi Kurniawan';
+          email = 'dedi@gmail.com';
+        } else if (emailLower === 'anisa@gmail.com' || emailLower === 'anisa') {
+          name = 'Anisa Rahma';
+          email = 'anisa@gmail.com';
+        }
+
+        const existingUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        if (!existingUser.email || existingUser.email.toLowerCase() !== email.toLowerCase()) {
+          localStorage.setItem('currentUser', JSON.stringify({
+            name,
+            username: name.toLowerCase().replace(/\s+/g, ''),
+            email,
+            phone: existingUser.phone || '081234567890',
+            avatar: existingUser.avatar || '',
+            role: 'Customer Active',
+          }));
+          window.dispatchEvent(new Event('bara_user_updated'));
+        }
+
         navigate('/dashboard');
       } else {
         setLoginError('Username/email atau password salah. Silakan coba lagi.');
