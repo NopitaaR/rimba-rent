@@ -1,141 +1,219 @@
-/**
- * CartContext.jsx
- * State management global untuk keranjang rental.
- * Data disinkronkan ke localStorage agar tidak hilang saat refresh.
- */
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
-const CartContext = createContext(null);
+const CartContext = createContext();
 
-const STORAGE_KEY = 'bara_cart';
-
-function sanitizeQty(val, fallback = 1) {
-  const parsed = parseInt(val, 10);
-  if (isNaN(parsed) || parsed < 1) return fallback;
-  return parsed;
-}
-
-function loadCart() {
+const getCurrentUser = () => {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-
-    return parsed
-      .filter((item) => {
-        if (!item || !item.productId) return false;
-        const stock = parseInt(item.stock, 10);
-        return isNaN(stock) || stock > 0;
-      })
-      .map((item) => {
-        const stock = parseInt(item.stock, 10);
-        const validStock = !isNaN(stock) && stock > 0 ? stock : 1;
-        const validQty = sanitizeQty(item.quantity, 1);
-        return {
-          ...item,
-          stock: validStock,
-          quantity: Math.min(validQty, validStock),
-        };
-      });
+    return JSON.parse(
+      localStorage.getItem('currentUser') || 'null'
+    );
   } catch {
+    return null;
+  }
+};
+
+const getCartKey = () => {
+  const user = getCurrentUser();
+
+  if (user?.id) {
+    return `bara_cart_user_${user.id}`;
+  }
+
+  return 'bara_cart_guest';
+};
+
+const loadCart = () => {
+  try {
+    const key = getCartKey();
+
+    const savedCart =
+      localStorage.getItem(key);
+
+    return savedCart
+      ? JSON.parse(savedCart)
+      : [];
+  } catch (error) {
+    console.error(
+      'Gagal membaca keranjang:',
+      error
+    );
+
     return [];
   }
-}
-
-function saveCart(items) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-}
+};
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState(loadCart);
+  const [items, setItems] = useState(
+    loadCart
+  );
 
-  // Sync ke localStorage setiap items berubah
+  // ==========================================
+  // SIMPAN CART SESUAI USER
+  // ==========================================
+
   useEffect(() => {
-    saveCart(items);
+    const key = getCartKey();
+
+    localStorage.setItem(
+      key,
+      JSON.stringify(items)
+    );
   }, [items]);
 
-  /** Tambah produk atau increment quantity jika sudah ada (dengan validasi defensif) */
-  const addItem = useCallback((product, qty = 1) => {
-    if (!product || typeof product.id === 'undefined') return;
+  // ==========================================
+  // KETIKA USER LOGIN / LOGOUT
+  // ==========================================
 
-    const availableStock = parseInt(product.stock, 10);
-    if (isNaN(availableStock) || availableStock <= 0) {
-      return; // Tolak produk dengan stok 0 atau tidak valid
-    }
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      setItems(loadCart());
+    };
 
-    const requestedQty = sanitizeQty(qty, 1);
+    window.addEventListener(
+      'bara_user_updated',
+      handleUserUpdate
+    );
 
-    setItems((prev) => {
-      const existing = prev.find((i) => i.productId === product.id);
-      if (existing) {
-        if (existing.quantity >= availableStock) {
-          return prev; // Sudah mencapai batas stok maksimum
-        }
-        const newQty = Math.min(availableStock, existing.quantity + requestedQty);
-        return prev.map((i) =>
-          i.productId === product.id ? { ...i, stock: availableStock, quantity: newQty } : i
+    return () => {
+      window.removeEventListener(
+        'bara_user_updated',
+        handleUserUpdate
+      );
+    };
+  }, []);
+
+  // ==========================================
+  // TAMBAH PRODUK
+  // ==========================================
+
+  const addItem = (product) => {
+    setItems((currentItems) => {
+      const existingItem =
+        currentItems.find(
+          (item) =>
+            Number(item.productId) ===
+            Number(product.productId)
+        );
+
+      if (existingItem) {
+        return currentItems.map((item) =>
+          Number(item.productId) ===
+            Number(product.productId)
+            ? {
+              ...item,
+              quantity:
+                item.quantity + 1,
+            }
+            : item
         );
       }
 
-      const initialQty = Math.min(availableStock, requestedQty);
-      if (initialQty <= 0) return prev;
-
       return [
-        ...prev,
+        ...currentItems,
         {
-          productId: product.id,
-          name: product.name,
-          badge: product.badge,
-          price: product.price,
-          img: product.img,
-          stock: availableStock,
-          quantity: initialQty,
+          ...product,
+          quantity:
+            product.quantity || 1,
         },
       ];
     });
-  }, []);
+  };
 
-  /** Update quantity satu item (min 1, max stock, defensif terhadap 0/negatif/NaN) */
-  const updateQty = useCallback((productId, qty) => {
-    const validQty = sanitizeQty(qty, 1);
+  // ==========================================
+  // UPDATE QUANTITY
+  // ==========================================
 
-    setItems((prev) =>
-      prev.map((i) => {
-        if (i.productId !== productId) return i;
+  const updateQty = (
+    productId,
+    quantity
+  ) => {
+    setItems((currentItems) => {
+      if (quantity <= 0) {
+        return currentItems.filter(
+          (item) =>
+            Number(item.productId) !==
+            Number(productId)
+        );
+      }
 
-        const maxStock = parseInt(i.stock, 10);
-        const safeStock = !isNaN(maxStock) && maxStock > 0 ? maxStock : validQty;
-        const finalQty = Math.min(Math.max(1, validQty), safeStock);
+      return currentItems.map((item) =>
+        Number(item.productId) ===
+          Number(productId)
+          ? {
+            ...item,
+            quantity,
+          }
+          : item
+      );
+    });
+  };
 
-        return { ...i, quantity: finalQty };
-      })
+  // ==========================================
+  // HAPUS PRODUK
+  // ==========================================
+
+  const removeItem = (productId) => {
+    setItems((currentItems) =>
+      currentItems.filter(
+        (item) =>
+          Number(item.productId) !==
+          Number(productId)
+      )
     );
-  }, []);
+  };
 
-  /** Hapus satu item */
-  const removeItem = useCallback((productId) => {
-    setItems((prev) => prev.filter((i) => i.productId !== productId));
-  }, []);
+  // ==========================================
+  // KOSONGKAN KERANJANG
+  // ==========================================
 
-  /** Kosongkan seluruh keranjang */
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = () => {
+    setItems([]);
 
-  /** Total item (sum of quantities) */
-  const totalItems = items.reduce((s, i) => s + i.quantity, 0);
+    localStorage.removeItem(
+      getCartKey()
+    );
+  };
+
+  // ==========================================
+  // TOTAL BARANG
+  // ==========================================
+
+  const totalItems = items.reduce(
+    (total, item) =>
+      total + Number(item.quantity || 0),
+    0
+  );
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, updateQty, removeItem, clearCart, totalItems }}
+      value={{
+        items,
+        addItem,
+        updateQty,
+        removeItem,
+        clearCart,
+        totalItems,
+      }}
     >
       {children}
     </CartContext.Provider>
   );
 }
 
-/** Hook untuk menggunakan CartContext */
 export function useCart() {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error('useCart must be used inside <CartProvider>');
-  return ctx;
+  const context =
+    useContext(CartContext);
+
+  if (!context) {
+    throw new Error(
+      'useCart harus digunakan di dalam CartProvider'
+    );
+  }
+
+  return context;
 }

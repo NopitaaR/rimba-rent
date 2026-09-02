@@ -1,16 +1,20 @@
 const API_URL = 'http://127.0.0.1:8000/api';
 
-// ================================
+
+// ==========================================
 // AMBIL SEMUA PESANAN
-// ================================
+// ==========================================
 export async function fetchOrders() {
-    const response = await fetch(`${API_URL}/orders`);
+    const response = await fetch(
+        `${API_URL}/orders`
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
         throw new Error(
-            result.message || 'Gagal mengambil data pesanan'
+            result.message ||
+            'Gagal mengambil data pesanan'
         );
     }
 
@@ -18,39 +22,108 @@ export async function fetchOrders() {
 }
 
 
-// ================================
-// BUAT PESANAN BARU
-// ================================
+// ==========================================
+// BUAT PESANAN + BUKTI PEMBAYARAN
+// ==========================================
 export async function createOrder(orderData) {
-    const response = await fetch(`${API_URL}/orders`, {
-        method: 'POST',
 
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-        },
+    const formData = new FormData();
 
-        body: JSON.stringify(orderData),
+
+    formData.append(
+        'user_id',
+        orderData.user_id
+    );
+
+    formData.append(
+        'start_date',
+        orderData.start_date
+    );
+
+    formData.append(
+        'end_date',
+        orderData.end_date
+    );
+
+    formData.append(
+        'duration_days',
+        orderData.duration_days
+    );
+
+
+    // ======================================
+    // ITEMS
+    // ======================================
+
+    orderData.items.forEach((item, index) => {
+
+        formData.append(
+            `items[${index}][product_id]`,
+            item.product_id
+        );
+
+        formData.append(
+            `items[${index}][quantity]`,
+            item.quantity
+        );
+
     });
 
+
+    // ======================================
+    // BUKTI PEMBAYARAN
+    // ======================================
+
+    if (orderData.payment_proof) {
+
+        formData.append(
+            'payment_proof',
+            orderData.payment_proof
+        );
+
+    }
+
+
+    const response = await fetch(
+        `${API_URL}/orders`,
+        {
+            method: 'POST',
+
+            headers: {
+                Accept: 'application/json',
+            },
+
+            body: formData,
+        }
+    );
+
+
     const result = await response.json();
 
+
     if (!response.ok) {
-        console.error(result);
+
+        console.error(
+            'Order API Error:',
+            result
+        );
 
         throw new Error(
-            result.message || 'Gagal membuat pesanan'
+            result.message ||
+            'Gagal membuat pesanan'
         );
     }
+
 
     return result.data;
 }
 
 
-// ================================
-// AMBIL DETAIL PESANAN
-// ================================
+// ==========================================
+// DETAIL PESANAN
+// ==========================================
 export async function fetchOrderById(id) {
+
     const response = await fetch(
         `${API_URL}/orders/${id}`
     );
@@ -59,7 +132,8 @@ export async function fetchOrderById(id) {
 
     if (!response.ok) {
         throw new Error(
-            result.message || 'Pesanan tidak ditemukan'
+            result.message ||
+            'Pesanan tidak ditemukan'
         );
     }
 
@@ -67,21 +141,60 @@ export async function fetchOrderById(id) {
 }
 
 
-// ================================
+// ==========================================
 // UPDATE PESANAN
-// ================================
-export async function updateOrder(id, orderData) {
+// ==========================================
+export async function updateOrder(
+    id,
+    orderData
+) {
+
     const response = await fetch(
         `${API_URL}/orders/${id}`,
         {
             method: 'PUT',
 
             headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
+                'Content-Type':
+                    'application/json',
+
+                Accept:
+                    'application/json',
             },
 
-            body: JSON.stringify(orderData),
+            body: JSON.stringify(
+                orderData
+            ),
+        }
+    );
+
+
+    const result =
+        await response.json();
+
+
+    if (!response.ok) {
+        throw new Error(
+            result.message ||
+            'Gagal memperbarui pesanan'
+        );
+    }
+
+
+    return result.data;
+}
+
+// ==========================================
+// VERIFIKASI PEMBAYARAN
+// ==========================================
+export async function verifyPayment(orderId) {
+    const response = await fetch(
+        `${API_URL}/orders/${orderId}/verify-payment`,
+        {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+            },
         }
     );
 
@@ -89,7 +202,35 @@ export async function updateOrder(id, orderData) {
 
     if (!response.ok) {
         throw new Error(
-            result.message || 'Gagal memperbarui pesanan'
+            result.message ||
+            'Gagal memverifikasi pembayaran'
+        );
+    }
+
+    return result.data;
+}
+
+
+// ==========================================
+// TOLAK PEMBAYARAN
+// ==========================================
+export async function rejectPayment(orderId) {
+    const response = await fetch(
+        `${API_URL}/orders/${orderId}/reject-payment`,
+        {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+            },
+        }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            result.message ||
+            'Gagal menolak pembayaran'
         );
     }
 

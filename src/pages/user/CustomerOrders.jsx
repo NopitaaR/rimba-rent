@@ -2,66 +2,67 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { formatPrice } from '../../data/products';
-import { getAdminOrders, getStatusClass } from '../../data/ordersStore';
+import { fetchOrders } from '../../api/OrdersApi';
+import { getStatusClass } from '../../data/ordersStore';
 import './CustomerOrders.css';
 
 // ── SVG Icons ─────────────────────────────────────────────
 const IconCart = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+    <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
   </svg>
 );
 
 const IconHistory = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+    <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
   </svg>
 );
 
 const IconInfo = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="12" y1="16" x2="12" y2="12"/>
-    <line x1="12" y1="8" x2="12.01" y2="8"/>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="16" x2="12" y2="12" />
+    <line x1="12" y1="8" x2="12.01" y2="8" />
   </svg>
 );
 
 const IconProfile = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="9" r="3"/>
-    <path d="M6.168 18.849A4 4 0 0 1 10 16h4a4 4 0 0 1 3.834 2.855"/>
+    <circle cx="12" cy="12" r="10" /><circle cx="12" cy="9" r="3" />
+    <path d="M6.168 18.849A4 4 0 0 1 10 16h4a4 4 0 0 1 3.834 2.855" />
   </svg>
 );
 
 const IconArrowLeft = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="19" y1="12" x2="5" y2="12"/>
-    <polyline points="12 19 5 12 12 5"/>
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
   </svg>
 );
 
 const IconPackage = () => (
   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/>
-    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-    <line x1="12" y1="22.08" x2="12" y2="12"/>
+    <line x1="16.5" y1="9.4" x2="7.5" y2="4.21" />
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+    <line x1="12" y1="22.08" x2="12" y2="12" />
   </svg>
 );
 
 const IconClose = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
 const IconCalendar = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-    <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
-    <line x1="3" y1="10" x2="21" y2="10"/>
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+    <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
   </svg>
 );
 
@@ -121,31 +122,43 @@ function getCurrentUser() {
   return { name: 'User Pelanggan', email: 'user@gmail.com' };
 }
 
+function getProductImageUrl(image) {
+  if (!image) {
+    return 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=200';
+  }
+
+  if (image.startsWith('http://') || image.startsWith('https://')) {
+    return image;
+  }
+
+  if (image.startsWith('/storage/')) {
+    return `http://127.0.0.1:8000${image}`;
+  }
+
+  if (image.startsWith('storage/')) {
+    return `http://127.0.0.1:8000/${image}`;
+  }
+
+  return `http://127.0.0.1:8000/storage/${image}`;
+}
+
 // ── Helper: Filter orders strictly for currentUser ──────
 function filterOrdersForUser(allOrders, user) {
-  if (!user) return [];
+  if (!user || !Array.isArray(allOrders)) return [];
 
-  const userEmail = (user.email || '').toLowerCase().trim();
-  const userName  = (user.name || user.namaLengkap || user.username || '').toLowerCase().trim();
-  const userPhone = (user.phone || user.nomorWhatsApp || '').replace(/[^0-9]/g, '');
+  const currentUserId = Number(user.id);
 
-  return allOrders.filter((o) => {
-    const orderEmail    = (o.email || '').toLowerCase().trim();
-    const orderCustomer = (o.customer || '').toLowerCase().trim();
-    const orderPhone    = (o.phone || '').replace(/[^0-9]/g, '');
+  return allOrders.filter((order) => {
+    // Prioritas utama: user_id dari database
+    if (currentUserId && Number(order.user_id) === currentUserId) {
+      return true;
+    }
 
-    // Match by email if available
-    if (userEmail && orderEmail && userEmail === orderEmail) return true;
+    // Fallback berdasarkan data user dari Laravel
+    const userEmail = (user.email || '').toLowerCase().trim();
+    const orderEmail = (order.user?.email || order.email || '').toLowerCase().trim();
 
-    // Match by customer name
-    if (userName && orderCustomer && (userName === orderCustomer || orderCustomer.includes(userName) || userName.includes(orderCustomer))) return true;
-
-    // Match by phone number if specific
-    if (userPhone && orderPhone && userPhone.length > 5 && userPhone === orderPhone) return true;
-
-    // Fallback for default demo customer account ('user@gmail.com' / 'User Pelanggan')
-    if ((userName === 'user pelanggan' || userEmail === 'user@gmail.com') &&
-        (orderCustomer === 'user pelanggan' || orderEmail === 'user@gmail.com')) {
+    if (userEmail && orderEmail && userEmail === orderEmail) {
       return true;
     }
 
@@ -165,27 +178,91 @@ function CustomerOrders() {
   const [activeTab, setActiveTab] = useState('Semua');
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  // Load and filter orders from Single Source of Truth (ordersStore.js)
-  const refreshOrders = () => {
-    const user = getCurrentUser();
-    setCurrentUser(user);
-    const all = getAdminOrders();
-    const userOrders = filterOrdersForUser(all, user);
-    setOrders(userOrders);
+  // Load orders from Laravel API
+  const refreshOrders = async () => {
+    try {
+      const user = getCurrentUser();
+      setCurrentUser(user);
+
+      const allOrders = await fetchOrders();
+      const userOrders = filterOrdersForUser(allOrders, user);
+
+      // Mapping data Laravel → format yang dipakai UI
+      const mappedOrders = userOrders.map((order) => ({
+        ...order,
+
+        id: order.order_code || `#${order.id}`,
+
+        startDate: order.start_date,
+        endDate: order.end_date,
+
+        durationDays: Number(order.duration_days) || 1,
+        duration: `${Number(order.duration_days) || 1} Hari`,
+
+        totalPayment: Number(order.total_payment) || 0,
+
+        customer:
+          order.user?.name ||
+          order.customer ||
+          user.name ||
+          user.namaLengkap ||
+          'Pelanggan',
+
+        email:
+          order.user?.email ||
+          order.email ||
+          user.email ||
+          '-',
+
+        phone:
+          order.user?.phone ||
+          order.phone ||
+          user.phone ||
+          user.nomorWhatsApp ||
+          '-',
+
+        items: (order.items || []).map((item) => ({
+          ...item,
+
+          name: item.product_name || item.product?.name || 'Produk',
+
+          price: Number(item.price) || 0,
+
+          quantity: Number(item.quantity) || 1,
+
+          qty: Number(item.quantity) || 1,
+
+          durationDays:
+            Number(item.duration_days) ||
+            Number(order.duration_days) ||
+            1,
+
+          subtotal: Number(item.subtotal) || 0,
+
+          image: getProductImageUrl(item.product?.image),
+        })),
+      }));
+
+      setOrders(mappedOrders);
+    } catch (error) {
+      console.error('Gagal mengambil riwayat pesanan:', error);
+      setOrders([]);
+    }
   };
 
   useEffect(() => {
     refreshOrders();
 
-    const handleUpdate = () => refreshOrders();
+    const handleUpdate = () => {
+      refreshOrders();
+    };
+
     window.addEventListener('bara_orders_updated', handleUpdate);
     window.addEventListener('bara_user_updated', handleUpdate);
-    window.addEventListener('storage', handleUpdate);
 
     return () => {
       window.removeEventListener('bara_orders_updated', handleUpdate);
       window.removeEventListener('bara_user_updated', handleUpdate);
-      window.removeEventListener('storage', handleUpdate);
     };
   }, []);
 
