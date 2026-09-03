@@ -26,6 +26,8 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import AdminEditProduct from "./pages/admin/AdminEditProduct";
 import AdminOrderDetail from "./pages/admin/AdminOrderDetail";
 
+import LandingPage from "./pages/user/LandingPage";
+
 // Protected route component for Admin
 function ProtectedAdminRoute({ children }) {
   const role = localStorage.getItem('userRole');
@@ -54,7 +56,8 @@ function App() {
         <CartProvider>
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
             {/* Protected Customer Routes */}
